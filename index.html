@@ -64,7 +64,11 @@
       .app { width: min(100% - 20px, 640px); padding-top: 18px; }
       .grid, .stats, .form, .login-grid { grid-template-columns: 1fr; }
       section { padding: 13px; }
-      th:nth-child(1), td:nth-child(1) { display: none; }
+      table, thead, tbody, tr, th, td { display: block; }
+      thead { display: none; }
+      tr { padding: 8px 0; border-bottom: 1px solid var(--line); }
+      td { border-bottom: 0; padding: 4px 0; overflow-wrap: anywhere; }
+      td.amount { text-align: left; }
     }
   </style>
 </head>
