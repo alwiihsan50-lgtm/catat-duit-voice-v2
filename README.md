@@ -2,6 +2,9 @@
 
 Aplikasi catatan uang keluarga berbasis voice input.
 
-- 1 email owner = 1 keluarga.
-- Data tersimpan langsung ke Supabase via anon key di frontend.
-- Voice minta izin mic saat app dibuka, lalu tombol voice klik-on/klik-off.
+- Login admin email untuk debugging, token, dan OpenRouter AI.
+- Login token untuk dashboard transaksi.
+- 1 email admin = 1 keluarga, banyak token berbagi data yang sama.
+- Dompet sederhana: `tunai` dan `non_tunai`.
+- Admin awal: `alwiihsan50@gmail.com` / `12345678`.
+- Token awal: `ALWI-12345678`.

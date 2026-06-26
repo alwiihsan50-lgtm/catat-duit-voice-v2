@@ -6,64 +6,32 @@
   <title>Catat Duit Voice</title>
   <style>
     :root {
-      --bg: #f7f8fb;
-      --panel: #fff;
-      --text: #17202a;
-      --muted: #687382;
-      --line: #dce2ea;
-      --green: #167a57;
-      --red: #c2413b;
-      --blue: #275bb5;
-      --amber: #a15c00;
+      --bg: #f7f8fb; --panel: #fff; --text: #17202a; --muted: #687382;
+      --line: #dce2ea; --green: #167a57; --red: #c2413b; --blue: #275bb5; --amber: #a15c00;
       font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
     }
     * { box-sizing: border-box; }
     body { margin: 0; background: var(--bg); color: var(--text); }
-    .app { width: min(1120px, calc(100% - 32px)); margin: 0 auto; padding: 28px 0; }
-    header, .topline, .actions, .family-row { display: flex; align-items: center; gap: 10px; }
+    .app { width: min(1160px, calc(100% - 32px)); margin: 0 auto; padding: 28px 0; }
+    header, .row, .actions, .tabs { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
     header { justify-content: space-between; margin-bottom: 18px; }
-    h1, h2 { margin: 0; letter-spacing: 0; }
+    h1, h2, h3 { margin: 0; letter-spacing: 0; }
     h1 { font-size: clamp(28px, 4vw, 44px); line-height: 1.05; }
-    h2 { font-size: 16px; }
+    h2 { font-size: 18px; } h3 { font-size: 15px; }
     p { margin: 6px 0 0; color: var(--muted); line-height: 1.5; }
     section, .stat {
-      background: var(--panel);
-      border: 1px solid var(--line);
-      border-radius: 8px;
+      background: var(--panel); border: 1px solid var(--line); border-radius: 8px;
       box-shadow: 0 8px 24px rgba(28, 39, 54, .06);
     }
     section { padding: 16px; }
-    .stats, .grid { display: grid; gap: 16px; }
-    .stats { grid-template-columns: repeat(3, minmax(0, 1fr)); margin-bottom: 16px; }
-    .grid { grid-template-columns: minmax(0, 1fr) 390px; align-items: start; }
+    .grid { display: grid; grid-template-columns: minmax(0, 1fr) 420px; gap: 16px; align-items: start; }
+    .stats { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; margin-bottom: 16px; }
     .stat { padding: 12px; }
     .stat small, label { color: var(--muted); font-size: 13px; font-weight: 700; }
     .stat strong { display: block; margin-top: 6px; font-size: 19px; }
-    .voice { display: grid; gap: 13px; }
-    .mic {
-      width: 100%;
-      min-height: 116px;
-      border: 0;
-      border-radius: 8px;
-      background: var(--green);
-      color: white;
-      cursor: pointer;
-      font-size: 20px;
-      font-weight: 800;
-      display: grid;
-      place-items: center;
-      gap: 8px;
-    }
-    .mic[aria-pressed="true"] { background: var(--red); }
-    .mic svg { width: 34px; height: 34px; }
     label { display: grid; gap: 6px; }
     input, textarea, select, button {
-      min-height: 40px;
-      border: 1px solid var(--line);
-      border-radius: 8px;
-      background: white;
-      color: var(--text);
-      font: inherit;
+      min-height: 40px; border: 1px solid var(--line); border-radius: 8px; background: white; color: var(--text); font: inherit;
     }
     input, textarea, select { width: 100%; padding: 10px 12px; }
     textarea { min-height: 88px; resize: vertical; }
@@ -71,26 +39,32 @@
     button:disabled { cursor: not-allowed; opacity: .55; }
     .primary { border-color: var(--blue); background: var(--blue); color: white; }
     .danger { color: var(--red); }
+    .ok { color: var(--green); }
+    .panel-stack { display: grid; gap: 14px; }
     .form { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
     .wide { grid-column: 1 / -1; }
-    .family { margin-bottom: 16px; }
-    .family-row { align-items: end; flex-wrap: wrap; margin-top: 12px; }
-    .family-row label { flex: 1 1 220px; }
-    .status { min-height: 24px; color: var(--amber); font-size: 14px; font-weight: 700; }
+    .login-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+    .status { min-height: 24px; color: var(--amber); font-size: 14px; font-weight: 700; margin-top: 10px; }
+    .mic {
+      width: 100%; min-height: 112px; border: 0; border-radius: 8px; background: var(--green); color: white;
+      cursor: pointer; font-size: 20px; font-weight: 850; display: grid; place-items: center; gap: 8px;
+    }
+    .mic[aria-pressed="true"] { background: var(--red); }
+    .mic svg { width: 34px; height: 34px; }
     table { width: 100%; border-collapse: collapse; }
-    th, td { padding: 11px 8px; border-bottom: 1px solid var(--line); text-align: left; vertical-align: top; }
+    th, td { padding: 10px 8px; border-bottom: 1px solid var(--line); text-align: left; vertical-align: top; }
     th { color: var(--muted); font-size: 12px; }
     td.amount { text-align: right; font-weight: 850; white-space: nowrap; }
-    .income { color: var(--green); }
-    .expense { color: var(--red); }
+    .income { color: var(--green); } .expense { color: var(--red); }
     .empty { color: var(--muted); text-align: center; padding: 26px 8px; }
-    .hidden { display: none; }
-    @media (max-width: 860px) {
+    .hidden { display: none !important; }
+    .token-box { padding: 10px; background: #f1f5fb; border: 1px solid var(--line); border-radius: 8px; word-break: break-all; font-weight: 800; }
+    .mini { min-height: 32px; padding: 0 9px; font-size: 13px; }
+    @media (max-width: 900px) {
       .app { width: min(100% - 20px, 640px); padding-top: 18px; }
-      header, .grid, .stats, .form { grid-template-columns: 1fr; display: grid; }
-      .topline { flex-wrap: wrap; }
-      th:nth-child(1), td:nth-child(1) { display: none; }
+      .grid, .stats, .form, .login-grid { grid-template-columns: 1fr; }
       section { padding: 13px; }
+      th:nth-child(1), td:nth-child(1) { display: none; }
     }
   </style>
 </head>
@@ -99,26 +73,100 @@
     <header>
       <div>
         <h1>Catat Duit Voice</h1>
-        <p id="familyLine">Masuk pakai email owner keluarga.</p>
+        <p id="subtitle">Login sebagai admin atau token transaksi.</p>
       </div>
-      <button id="logoutBtn" class="hidden">Ganti Email</button>
+      <button id="logoutBtn" class="hidden">Keluar</button>
     </header>
 
-    <section id="familyGate" class="family">
-      <h2>Email keluarga</h2>
-      <p>Satu email membuat satu keluarga. Kalau email sudah ada, app langsung membuka data keluarga itu.</p>
-      <div class="family-row">
-        <label>Email owner
-          <input id="ownerEmail" type="email" autocomplete="email" placeholder="nama@email.com">
-        </label>
-        <label>Nama keluarga
-          <input id="familyName" autocomplete="organization" placeholder="Keluarga Alwi">
-        </label>
-        <button id="familyBtn" class="primary">Masuk / Buat</button>
+    <section id="loginView">
+      <div class="login-grid">
+        <div class="panel-stack">
+          <div>
+            <h2>Login Email Admin</h2>
+            <p>Mode admin untuk token, AI, dan debugging. Tidak bisa masuk dashboard transaksi.</p>
+          </div>
+          <label>Email
+            <input id="adminEmail" type="email" autocomplete="email" value="alwiihsan50@gmail.com">
+          </label>
+          <label>Password
+            <input id="adminPassword" type="password" autocomplete="current-password" value="12345678">
+          </label>
+          <button id="adminLoginBtn" class="primary">Masuk Admin</button>
+        </div>
+
+        <div class="panel-stack">
+          <div>
+            <h2>Login Token</h2>
+            <p>Mode transaksi harian. Token awal: <strong>ALWI-12345678</strong>.</p>
+          </div>
+          <label>Token keluarga
+            <input id="tokenInput" autocomplete="off" placeholder="TOKEN-XXXX">
+          </label>
+          <button id="tokenLoginBtn" class="primary">Masuk Transaksi</button>
+        </div>
       </div>
+      <div class="status" id="loginStatus"></div>
     </section>
 
-    <div id="mainApp" class="hidden">
+    <div id="adminView" class="hidden panel-stack">
+      <section>
+        <div class="row">
+          <div>
+            <h2>Dashboard Admin</h2>
+            <p id="adminFamilyLine"></p>
+          </div>
+        </div>
+      </section>
+
+      <div class="grid">
+        <section class="panel-stack">
+          <h3>Token keluarga</h3>
+          <div class="form">
+            <label>Nama token
+              <input id="newTokenLabel" placeholder="Ibu / Alwi / Kas rumah">
+            </label>
+            <label>Token baru
+              <input id="newTokenValue" placeholder="otomatis kalau kosong">
+            </label>
+          </div>
+          <div class="actions">
+            <button id="makeTokenBtn" class="primary">Generate Token</button>
+          </div>
+          <div id="newTokenBox" class="token-box hidden"></div>
+          <table>
+            <thead><tr><th>Token</th><th>Status</th><th>Transaksi</th><th>Aksi</th></tr></thead>
+            <tbody id="tokenRows"></tbody>
+          </table>
+        </section>
+
+        <section class="panel-stack">
+          <h3>OpenRouter AI</h3>
+          <label>API key
+            <input id="aiKey" type="password" placeholder="sk-or-v1-...">
+          </label>
+          <label>Model
+            <input id="aiModel" value="openrouter/auto">
+          </label>
+          <button id="saveAiBtn" class="primary">Simpan AI</button>
+          <p id="aiState"></p>
+        </section>
+      </div>
+
+      <section class="panel-stack">
+        <div class="row">
+          <h3>Debug transaksi keluarga</h3>
+          <button id="adminRefreshBtn">Refresh</button>
+          <button id="adminDeleteAllBtn" class="danger">Hapus Semua Transaksi</button>
+        </div>
+        <table>
+          <thead><tr><th>Tanggal</th><th>Pembuat</th><th>Catatan</th><th>Dompet</th><th>Nominal</th></tr></thead>
+          <tbody id="adminTransactionRows"></tbody>
+        </table>
+      </section>
+      <div class="status" id="adminStatus"></div>
+    </div>
+
+    <div id="txView" class="hidden">
       <div class="stats">
         <div class="stat"><small>Saldo</small><strong id="balance">Rp0</strong></div>
         <div class="stat"><small>Masuk</small><strong id="income">Rp0</strong></div>
@@ -126,50 +174,48 @@
       </div>
 
       <div class="grid">
-        <section class="voice">
+        <section class="panel-stack">
+          <div>
+            <h2>Dashboard Transaksi</h2>
+            <p id="tokenFamilyLine"></p>
+          </div>
           <button class="mic" id="micBtn" aria-pressed="false">
             <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 14a4 4 0 0 0 4-4V7a4 4 0 0 0-8 0v3a4 4 0 0 0 4 4Zm7-4a7 7 0 0 1-14 0m7 7v4m-4 0h8" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
             <span id="micText">Voice On</span>
           </button>
-
-          <label>Hasil suara / teks cepat
-            <textarea id="rawText" autocomplete="off" placeholder="Contoh: pengeluaran 15000 makan, pemasukan 1jt gaji"></textarea>
+          <label>Teks transaksi
+            <textarea id="rawText" placeholder="Contoh: beli makan 15000 tunai, gaji 1jt non tunai"></textarea>
           </label>
-
           <div class="form">
             <label>Tipe
-              <select id="type">
-                <option value="expense">Pengeluaran</option>
-                <option value="income">Pemasukan</option>
-              </select>
+              <select id="type"><option value="expense">Pengeluaran</option><option value="income">Pemasukan</option></select>
+            </label>
+            <label>Dompet
+              <select id="wallet"><option value="tunai">Tunai</option><option value="non_tunai">Non tunai</option></select>
             </label>
             <label>Nominal
-              <input id="amount" inputmode="numeric" autocomplete="off" placeholder="15000">
+              <input id="amount" inputmode="numeric" placeholder="15000">
             </label>
-            <label class="wide">Catatan
-              <input id="note" autocomplete="off" placeholder="Makan siang">
+            <label>Catatan
+              <input id="note" placeholder="Makan siang">
             </label>
           </div>
-
           <div class="actions">
-            <button class="primary" id="saveBtn">Simpan</button>
+            <button id="aiParseBtn">Terjemahkan AI</button>
             <button id="parseBtn">Baca Teks</button>
-            <button class="danger" id="clearBtn">Hapus Riwayat</button>
+            <button id="saveBtn" class="primary">Simpan</button>
+            <button id="cancelEditBtn" class="hidden">Batal Edit</button>
           </div>
-          <div class="status" id="status"></div>
+          <div class="status" id="txStatus"></div>
         </section>
 
-        <section>
-          <div class="topline">
+        <section class="panel-stack">
+          <div class="row">
             <h2>Riwayat</h2>
-            <select id="filter" aria-label="Filter riwayat">
-              <option value="all">Semua</option>
-              <option value="income">Pemasukan</option>
-              <option value="expense">Pengeluaran</option>
-            </select>
+            <select id="filter"><option value="all">Semua</option><option value="income">Pemasukan</option><option value="expense">Pengeluaran</option></select>
           </div>
           <table>
-            <thead><tr><th>Tanggal</th><th>Catatan</th><th>Nominal</th></tr></thead>
+            <thead><tr><th>Tanggal</th><th>Pembuat</th><th>Catatan</th><th>Nominal</th><th>Aksi</th></tr></thead>
             <tbody id="rows"></tbody>
           </table>
         </section>
@@ -182,19 +228,56 @@
 
     const SUPABASE_URL = "https://ajlkfzgpheegmwsnspxw.supabase.co";
     const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFqbGtmemdwaGVlZ213c25zcHh3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODEwNzA2NzYsImV4cCI6MjA5NjY0NjY3Nn0.hz-BhOjBbuOa8l-yvRFbB4VE81VODWAZfAiwIaPlVWw";
-    const FAMILY_KEY = "catat-duit-voice-family";
-
+    const SESSION_KEY = "catat-duit-session-v2";
     const db = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
     const $ = (id) => document.getElementById(id);
-    const money = new Intl.NumberFormat("id-ID", { style: "currency", currency: "IDR", maximumFractionDigits: 0 });
+    const rupiah = (n) => new Intl.NumberFormat("id-ID", { style: "currency", currency: "IDR", maximumFractionDigits: 0 }).format(n).replace(/\s/g, "");
 
-    let family = JSON.parse(localStorage.getItem(FAMILY_KEY) || "null");
-    let entries = [];
+    let session = JSON.parse(localStorage.getItem(SESSION_KEY) || "null");
+    let transactions = [];
+    let editingId = null;
     let recognition;
     let listening = false;
 
-    const rupiah = (n) => money.format(n).replace(/\s/g, "");
-    const setStatus = (text) => $("status").textContent = text;
+    async function sha256(text) {
+      const bytes = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(text));
+      return [...new Uint8Array(bytes)].map((b) => b.toString(16).padStart(2, "0")).join("");
+    }
+
+    async function rpc(name, args) {
+      const { data, error } = await db.rpc(name, args);
+      if (error) throw error;
+      return data || [];
+    }
+
+    function show(view) {
+      $("loginView").classList.toggle("hidden", view !== "login");
+      $("adminView").classList.toggle("hidden", view !== "admin");
+      $("txView").classList.toggle("hidden", view !== "tx");
+      $("logoutBtn").classList.toggle("hidden", view === "login");
+      $("subtitle").textContent = view === "admin" ? "Mode admin: token, AI, debugging." : view === "tx" ? "Mode transaksi keluarga." : "Login sebagai admin atau token transaksi.";
+    }
+
+    async function loginAdmin() {
+      $("loginStatus").textContent = "";
+      const passwordHash = await sha256($("adminPassword").value);
+      const rows = await rpc("cdv_admin_login", { p_email: $("adminEmail").value, p_password_hash: passwordHash });
+      if (!rows.length) return $("loginStatus").textContent = "Email atau password admin salah.";
+      session = { mode: "admin", passwordHash, ...rows[0] };
+      localStorage.setItem(SESSION_KEY, JSON.stringify(session));
+      await loadAdmin();
+    }
+
+    async function loginToken() {
+      $("loginStatus").textContent = "";
+      const token = $("tokenInput").value.trim();
+      const tokenHash = await sha256(token);
+      const rows = await rpc("cdv_token_login", { p_token_hash: tokenHash });
+      if (!rows.length) return $("loginStatus").textContent = "Token tidak valid atau nonaktif.";
+      session = { mode: "tx", token, tokenHash, ...rows[0] };
+      localStorage.setItem(SESSION_KEY, JSON.stringify(session));
+      await loadTx();
+    }
 
     async function requestMicPermission() {
       if (!navigator.mediaDevices?.getUserMedia) return;
@@ -202,169 +285,208 @@
         const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
         stream.getTracks().forEach((track) => track.stop());
       } catch {
-        setStatus("Izin mic belum aktif. Tekan tombol voice untuk coba lagi.");
+        // ponytail: browser may block startup permission until user taps voice.
       }
     }
 
-    function normalizeEmail(value) {
-      return value.trim().toLowerCase();
+    async function loadAdmin() {
+      show("admin");
+      $("adminFamilyLine").textContent = `${session.family_name} - ${session.owner_email}`;
+      $("aiModel").value = session.ai_model || "openrouter/auto";
+      $("aiState").textContent = session.has_ai ? "AI sudah terpasang." : "AI belum dipasang.";
+      await Promise.all([loadTokens(), loadAdminTransactions()]);
     }
 
-    async function enterFamily() {
-      const ownerEmail = normalizeEmail($("ownerEmail").value);
-      const name = $("familyName").value.trim() || ownerEmail.split("@")[0] || "Keluarga";
-      if (!ownerEmail || !ownerEmail.includes("@")) return setStatus("Email owner belum valid.");
-
-      $("familyBtn").disabled = true;
-      try {
-        const { data: existing, error: findError } = await db
-          .from("catat_duit_voice_families")
-          .select("*")
-          .eq("owner_email", ownerEmail)
-          .maybeSingle();
-        if (findError) throw findError;
-
-        if (existing) {
-          family = existing;
-        } else {
-          const { data: created, error: createError } = await db
-            .from("catat_duit_voice_families")
-            .insert({ owner_email: ownerEmail, name })
-            .select()
-            .single();
-          if (createError) throw createError;
-          family = created;
-        }
-
-        localStorage.setItem(FAMILY_KEY, JSON.stringify(family));
-        showApp();
-        await loadEntries();
-      } catch (error) {
-        setStatus(error.message || "Gagal masuk keluarga.");
-      } finally {
-        $("familyBtn").disabled = false;
-      }
+    async function loadTokens() {
+      const rows = await rpc("cdv_list_tokens", { p_family_id: session.family_id, p_password_hash: session.passwordHash });
+      $("tokenRows").replaceChildren(...rows.map(tokenRow));
+      if (!rows.length) $("tokenRows").innerHTML = `<tr><td class="empty" colspan="4">Belum ada token.</td></tr>`;
     }
 
-    function showApp() {
-      $("familyGate").classList.toggle("hidden", !!family);
-      $("mainApp").classList.toggle("hidden", !family);
-      $("logoutBtn").classList.toggle("hidden", !family);
-      $("familyLine").textContent = family ? `${family.name} - ${family.owner_email}` : "Masuk pakai email owner keluarga.";
+    function tokenRow(t) {
+      const tr = document.createElement("tr");
+      tr.innerHTML = `<td>${t.label}</td><td>${t.is_active ? "Aktif" : "Nonaktif"}</td><td>${t.transaction_count}</td><td></td>`;
+      const cell = tr.lastElementChild;
+      const toggle = document.createElement("button");
+      toggle.className = "mini";
+      toggle.textContent = t.is_active ? "Matikan" : "Aktifkan";
+      toggle.onclick = async () => {
+        await rpc("cdv_set_token_active", { p_family_id: session.family_id, p_password_hash: session.passwordHash, p_token_id: t.id, p_active: !t.is_active });
+        await loadTokens();
+      };
+      const del = document.createElement("button");
+      del.className = "mini danger";
+      del.textContent = "Hapus";
+      del.disabled = Number(t.transaction_count) > 0;
+      del.onclick = async () => {
+        await rpc("cdv_delete_empty_token", { p_family_id: session.family_id, p_password_hash: session.passwordHash, p_token_id: t.id });
+        await loadTokens();
+      };
+      cell.append(toggle, del);
+      return tr;
     }
 
-    async function loadEntries() {
-      if (!family) return;
-      const { data, error } = await db
-        .from("catat_duit_voice_transactions")
-        .select("*")
-        .eq("family_id", family.id)
-        .order("happened_at", { ascending: false });
-      if (error) return setStatus(error.message);
-      entries = data || [];
-      render();
+    async function makeToken() {
+      const raw = $("newTokenValue").value.trim() || `CDV-${crypto.randomUUID().slice(0, 8).toUpperCase()}`;
+      const label = $("newTokenLabel").value.trim() || raw;
+      await rpc("cdv_create_token", { p_family_id: session.family_id, p_password_hash: session.passwordHash, p_label: label, p_token_hash: await sha256(raw) });
+      $("newTokenBox").classList.remove("hidden");
+      $("newTokenBox").textContent = `Token baru: ${raw}`;
+      $("newTokenLabel").value = $("newTokenValue").value = "";
+      await loadTokens();
     }
 
-    function parseMoney(text) {
-      const normalized = text.toLowerCase();
-      const match = normalized.match(/\b(\d+(?:[.,]\d{1,3})*)\s*(jt|rb|k)\b|\b(\d+(?:[.,]\d{1,3})*)\s*(juta|ribu)?\b/);
-      if (!match) return 0;
-
-      const raw = match[1] || match[3];
-      const unit = ({ jt: "juta", rb: "ribu", k: "ribu" }[match[2]] || match[4] || "");
-      let number;
-
-      if (unit) {
-        number = Number(raw.replace(",", "."));
-      } else if (/^\d{1,3}([.,]\d{3})+$/.test(raw)) {
-        number = Number(raw.replace(/[.,]/g, ""));
-      } else {
-        number = Number(raw.replace(/[^\d]/g, ""));
-      }
-
-      const multiplier = unit === "juta" ? 1000000 : unit === "ribu" ? 1000 : 1;
-      return Math.round(number * multiplier) || 0;
-    }
-
-    function parseText() {
-      const text = $("rawText").value.trim();
-      if (!text) return setStatus("Teks masih kosong.");
-      const lower = text.toLowerCase();
-      const type = /masuk|pemasukan|gaji|terima|income/.test(lower) ? "income" : "expense";
-      const amount = parseMoney(lower);
-      const note = text
-        .replace(/\d+(?:[.,]\d{1,3})*\s*(juta|jt|ribu|rb|k)?/i, "")
-        .replace(/pengeluaran|pemasukan|keluar|masuk|income|expense|beli|bayar/ig, "")
-        .trim() || (type === "income" ? "Pemasukan" : "Pengeluaran");
-
-      $("type").value = type;
-      $("amount").value = amount || "";
-      $("note").value = note;
-      setStatus(amount ? "Teks terbaca. Cek lalu simpan." : "Nominal belum ketemu.");
-      return { type, amount, note };
-    }
-
-    async function saveEntry() {
-      if (!family) return setStatus("Masuk email keluarga dulu.");
-      const amount = Number(String($("amount").value).replace(/[^\d]/g, ""));
-      const note = $("note").value.trim();
-      if (!amount || !note) return setStatus("Nominal dan catatan wajib diisi.");
-
-      const { error } = await db.from("catat_duit_voice_transactions").insert({
-        family_id: family.id,
-        type: $("type").value,
-        note,
-        amount,
+    async function saveAi() {
+      const rows = await rpc("cdv_set_ai", {
+        p_family_id: session.family_id,
+        p_password_hash: session.passwordHash,
+        p_api_key: $("aiKey").value,
+        p_model: $("aiModel").value || "openrouter/auto",
       });
-      if (error) return setStatus(error.message);
-
-      $("rawText").value = $("amount").value = $("note").value = "";
-      setStatus("Tersimpan.");
-      await loadEntries();
+      session.ai_model = rows[0]?.ai_model || $("aiModel").value;
+      session.has_ai = rows[0]?.has_ai || false;
+      localStorage.setItem(SESSION_KEY, JSON.stringify(session));
+      $("aiKey").value = "";
+      $("aiState").textContent = session.has_ai ? "AI tersimpan." : "AI dihapus.";
     }
 
-    async function clearEntries() {
-      if (!family || !entries.length || !confirm("Hapus semua riwayat keluarga ini?")) return;
-      const { error } = await db.from("catat_duit_voice_transactions").delete().eq("family_id", family.id);
-      if (error) return setStatus(error.message);
-      entries = [];
-      render();
-      setStatus("Riwayat dihapus.");
+    async function loadAdminTransactions() {
+      const rows = await rpc("cdv_list_transactions_admin", { p_family_id: session.family_id, p_password_hash: session.passwordHash });
+      $("adminTransactionRows").replaceChildren(...rows.map(simpleTransactionRow));
+      if (!rows.length) $("adminTransactionRows").innerHTML = `<tr><td class="empty" colspan="5">Belum ada transaksi.</td></tr>`;
     }
 
-    function render() {
-      const totals = entries.reduce((acc, item) => {
-        acc[item.type] += item.amount;
-        return acc;
-      }, { income: 0, expense: 0 });
+    async function loadTx() {
+      show("tx");
+      $("tokenFamilyLine").textContent = `${session.family_name} - ${session.token_label}`;
+      await loadTransactions();
+    }
+
+    async function loadTransactions() {
+      transactions = await rpc("cdv_list_transactions_token", { p_family_id: session.family_id, p_token_hash: session.tokenHash });
+      renderTransactions();
+    }
+
+    function renderTransactions() {
+      const totals = transactions.reduce((a, x) => (a[x.type] += x.amount, a), { income: 0, expense: 0 });
       $("income").textContent = rupiah(totals.income);
       $("expense").textContent = rupiah(totals.expense);
       $("balance").textContent = rupiah(totals.income - totals.expense);
+      const visible = transactions.filter((x) => $("filter").value === "all" || x.type === $("filter").value);
+      $("rows").replaceChildren(...visible.map(transactionRow));
+      if (!visible.length) $("rows").innerHTML = `<tr><td class="empty" colspan="5">Belum ada transaksi.</td></tr>`;
+    }
 
-      const visible = entries.filter((item) => $("filter").value === "all" || item.type === $("filter").value);
-      $("rows").replaceChildren();
-      if (!visible.length) {
-        const tr = document.createElement("tr");
-        const td = document.createElement("td");
-        td.className = "empty";
-        td.colSpan = 3;
-        td.textContent = "Belum ada catatan.";
-        tr.append(td);
-        $("rows").append(tr);
-        return;
-      }
+    function simpleTransactionRow(x) {
+      const tr = document.createElement("tr");
+      tr.innerHTML = `<td>${new Date(x.happened_at).toLocaleDateString("id-ID")}</td><td>${x.created_by}</td><td>${x.note}</td><td>${x.wallet === "tunai" ? "Tunai" : "Non tunai"}</td><td class="amount ${x.type}">${x.type === "income" ? "+" : "-"}${rupiah(x.amount)}</td>`;
+      return tr;
+    }
 
-      for (const item of visible) {
-        const tr = document.createElement("tr");
-        const date = document.createElement("td");
-        const note = document.createElement("td");
-        const amount = document.createElement("td");
-        date.textContent = new Date(item.happened_at).toLocaleDateString("id-ID");
-        note.textContent = item.note;
-        amount.className = `amount ${item.type}`;
-        amount.textContent = `${item.type === "income" ? "+" : "-"}${rupiah(item.amount)}`;
-        tr.append(date, note, amount);
-        $("rows").append(tr);
+    function transactionRow(x) {
+      const tr = simpleTransactionRow(x);
+      const action = document.createElement("td");
+      const edit = document.createElement("button");
+      edit.className = "mini";
+      edit.textContent = "Edit";
+      edit.onclick = () => startEdit(x);
+      const del = document.createElement("button");
+      del.className = "mini danger";
+      del.textContent = "Hapus";
+      del.onclick = async () => {
+        if (!confirm(`Hapus "${x.note}"?`)) return;
+        await rpc("cdv_delete_transaction", { p_family_id: session.family_id, p_token_hash: session.tokenHash, p_id: x.id });
+        await loadTransactions();
+      };
+      action.append(edit, del);
+      tr.append(action);
+      return tr;
+    }
+
+    function startEdit(x) {
+      editingId = x.id;
+      $("type").value = x.type;
+      $("wallet").value = x.wallet;
+      $("amount").value = x.amount;
+      $("note").value = x.note;
+      $("saveBtn").textContent = "Update";
+      $("cancelEditBtn").classList.remove("hidden");
+    }
+
+    function cancelEdit() {
+      editingId = null;
+      $("saveBtn").textContent = "Simpan";
+      $("cancelEditBtn").classList.add("hidden");
+      $("rawText").value = $("amount").value = $("note").value = "";
+    }
+
+    async function saveTransaction() {
+      const amount = Number(String($("amount").value).replace(/[^\d]/g, ""));
+      const note = $("note").value.trim();
+      if (!amount || !note) return $("txStatus").textContent = "Nominal dan catatan wajib diisi.";
+      const args = { p_family_id: session.family_id, p_token_hash: session.tokenHash, p_type: $("type").value, p_wallet: $("wallet").value, p_note: note, p_amount: amount };
+      if (editingId) await rpc("cdv_update_transaction", { ...args, p_id: editingId });
+      else await rpc("cdv_add_transaction", args);
+      $("txStatus").textContent = editingId ? "Transaksi diupdate." : "Transaksi tersimpan.";
+      cancelEdit();
+      await loadTransactions();
+    }
+
+    function parseMoney(text) {
+      const match = text.toLowerCase().match(/\b(\d+(?:[.,]\d{1,3})*)\s*(jt|rb|k)\b|\b(\d+(?:[.,]\d{1,3})*)\s*(juta|ribu)?\b/);
+      if (!match) return 0;
+      const raw = match[1] || match[3];
+      const unit = ({ jt: "juta", rb: "ribu", k: "ribu" }[match[2]] || match[4] || "");
+      const n = unit ? Number(raw.replace(",", ".")) : /^\d{1,3}([.,]\d{3})+$/.test(raw) ? Number(raw.replace(/[.,]/g, "")) : Number(raw.replace(/[^\d]/g, ""));
+      return Math.round(n * (unit === "juta" ? 1000000 : unit === "ribu" ? 1000 : 1)) || 0;
+    }
+
+    function localParse() {
+      const text = $("rawText").value.trim();
+      if (!text) return $("txStatus").textContent = "Teks masih kosong.";
+      const lower = text.toLowerCase();
+      const type = /masuk|pemasukan|gaji|terima|income/.test(lower) ? "income" : "expense";
+      const wallet = /non\s*tunai|transfer|bank|bca|bri|mandiri|qris|ovo|dana|gopay/.test(lower) ? "non_tunai" : "tunai";
+      const amount = parseMoney(lower);
+      const note = text
+        .replace(/\d+(?:[.,]\d{1,3})*\s*(juta|jt|ribu|rb|k)?/i, "")
+        .replace(/pengeluaran|pemasukan|keluar|masuk|income|expense|beli|bayar|tunai|non tunai|transfer|qris/ig, "")
+        .trim() || (type === "income" ? "Pemasukan" : "Pengeluaran");
+      fillParsed({ type, wallet, amount, note });
+      $("txStatus").textContent = amount ? "Teks terbaca." : "Nominal belum ketemu.";
+    }
+
+    function fillParsed(x) {
+      $("type").value = x.type === "income" ? "income" : "expense";
+      $("wallet").value = x.wallet === "non_tunai" ? "non_tunai" : "tunai";
+      $("amount").value = x.amount || "";
+      $("note").value = x.note || "";
+    }
+
+    async function aiParse() {
+      const text = $("rawText").value.trim();
+      if (!text) return $("txStatus").textContent = "Teks masih kosong.";
+      try {
+        const ai = await rpc("cdv_get_ai_for_token", { p_family_id: session.family_id, p_token_hash: session.tokenHash });
+        if (!ai[0]?.api_key) throw new Error("AI belum dipasang admin.");
+        const res = await fetch("https://openrouter.ai/api/v1/chat/completions", {
+          method: "POST",
+          headers: { "Content-Type": "application/json", Authorization: `Bearer ${ai[0].api_key}`, "HTTP-Referer": location.origin, "X-Title": "Catat Duit Voice" },
+          body: JSON.stringify({
+            model: ai[0].ai_model || "openrouter/auto",
+            messages: [
+              { role: "system", content: "Ubah teks transaksi harian Indonesia menjadi JSON saja: {\"type\":\"income|expense\",\"wallet\":\"tunai|non_tunai\",\"amount\":number,\"note\":\"string\"}. Hanya pemasukan/pengeluaran. Jangan markdown." },
+              { role: "user", content: text },
+            ],
+          }),
+        });
+        if (!res.ok) throw new Error(`OpenRouter gagal (${res.status}).`);
+        const content = (await res.json()).choices?.[0]?.message?.content || "";
+        fillParsed(JSON.parse(content.replace(/```json|```/g, "").trim()));
+        $("txStatus").textContent = "AI selesai menerjemahkan.";
+      } catch (error) {
+        localParse();
+        $("txStatus").textContent = `${error.message} Fallback lokal dipakai.`;
       }
     }
 
@@ -372,55 +494,48 @@
       const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
       if (!SpeechRecognition) return null;
       const rec = new SpeechRecognition();
-      rec.lang = "id-ID";
-      rec.continuous = true;
-      rec.interimResults = false;
+      rec.lang = "id-ID"; rec.continuous = true; rec.interimResults = false;
       rec.onresult = (event) => {
-        const last = event.results[event.results.length - 1][0].transcript;
-        $("rawText").value = last;
-        parseText();
+        $("rawText").value = event.results[event.results.length - 1][0].transcript;
+        aiParse();
       };
-      rec.onend = () => {
-        if (listening) rec.start();
-      };
-      rec.onerror = () => setStatus("Voice gagal. Coba lagi atau ketik manual.");
+      rec.onend = () => { if (listening) rec.start(); };
+      rec.onerror = () => $("txStatus").textContent = "Voice gagal. Coba lagi atau ketik manual.";
       return rec;
     }
 
     function toggleVoice() {
       recognition ||= setupRecognition();
-      if (!recognition) return setStatus("Voice belum didukung browser ini. Pakai Chrome.");
+      if (!recognition) return $("txStatus").textContent = "Voice belum didukung browser ini. Pakai Chrome.";
       listening = !listening;
       $("micBtn").setAttribute("aria-pressed", String(listening));
       $("micText").textContent = listening ? "Voice Off" : "Voice On";
-      if (listening) {
-        recognition.start();
-        setStatus("Voice aktif.");
-      } else {
-        recognition.stop();
-        setStatus("Voice berhenti.");
-      }
+      listening ? recognition.start() : recognition.stop();
     }
 
-    $("familyBtn").onclick = enterFamily;
-    $("logoutBtn").onclick = () => {
-      localStorage.removeItem(FAMILY_KEY);
-      family = null;
-      entries = [];
-      showApp();
-      render();
+    $("adminLoginBtn").onclick = loginAdmin;
+    $("tokenLoginBtn").onclick = loginToken;
+    $("makeTokenBtn").onclick = makeToken;
+    $("saveAiBtn").onclick = saveAi;
+    $("adminRefreshBtn").onclick = loadAdminTransactions;
+    $("adminDeleteAllBtn").onclick = async () => {
+      if (!confirm("Hapus semua transaksi keluarga ini?")) return;
+      await rpc("cdv_admin_delete_all_transactions", { p_family_id: session.family_id, p_password_hash: session.passwordHash });
+      await loadAdminTransactions();
     };
     $("micBtn").onclick = toggleVoice;
-    $("parseBtn").onclick = parseText;
-    $("saveBtn").onclick = saveEntry;
-    $("clearBtn").onclick = clearEntries;
-    $("filter").onchange = render;
-    $("ownerEmail").onkeydown = (event) => { if (event.key === "Enter") enterFamily(); };
-    $("familyName").onkeydown = (event) => { if (event.key === "Enter") enterFamily(); };
+    $("aiParseBtn").onclick = aiParse;
+    $("parseBtn").onclick = localParse;
+    $("saveBtn").onclick = saveTransaction;
+    $("cancelEditBtn").onclick = cancelEdit;
+    $("filter").onchange = renderTransactions;
+    $("logoutBtn").onclick = () => { localStorage.removeItem(SESSION_KEY); session = null; show("login"); };
+    for (const id of ["adminEmail", "adminPassword", "tokenInput"]) $(id).onkeydown = (e) => { if (e.key === "Enter") (id === "tokenInput" ? loginToken : loginAdmin)(); };
 
     requestMicPermission();
-    showApp();
-    if (family) loadEntries();
+    if (session?.mode === "admin") loadAdmin().catch(() => show("login"));
+    else if (session?.mode === "tx") loadTx().catch(() => show("login"));
+    else show("login");
   </script>
 </body>
 </html>
