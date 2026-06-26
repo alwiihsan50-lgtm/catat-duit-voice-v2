@@ -6,178 +6,91 @@
   <title>Catat Duit Voice</title>
   <style>
     :root {
-      color-scheme: light;
       --bg: #f7f8fb;
-      --panel: #ffffff;
+      --panel: #fff;
       --text: #17202a;
       --muted: #687382;
       --line: #dce2ea;
       --green: #167a57;
       --red: #c2413b;
-      --amber: #b66a00;
       --blue: #275bb5;
+      --amber: #a15c00;
       font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
     }
-
     * { box-sizing: border-box; }
-    body {
-      margin: 0;
-      background: var(--bg);
-      color: var(--text);
-    }
-
-    .app {
-      width: min(1120px, calc(100% - 32px));
-      margin: 0 auto;
-      padding: 28px 0;
-    }
-
-    header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 16px;
-      margin-bottom: 20px;
-    }
-
+    body { margin: 0; background: var(--bg); color: var(--text); }
+    .app { width: min(1120px, calc(100% - 32px)); margin: 0 auto; padding: 28px 0; }
+    header, .topline, .actions, .family-row { display: flex; align-items: center; gap: 10px; }
+    header { justify-content: space-between; margin-bottom: 18px; }
     h1, h2 { margin: 0; letter-spacing: 0; }
-    h1 { font-size: clamp(28px, 4vw, 46px); line-height: 1.05; }
+    h1 { font-size: clamp(28px, 4vw, 44px); line-height: 1.05; }
     h2 { font-size: 16px; }
-    p { margin: 6px 0 0; color: var(--muted); line-height: 1.55; }
-
-    .grid {
-      display: grid;
-      grid-template-columns: minmax(0, 1fr) 360px;
-      gap: 16px;
-      align-items: start;
-    }
-
-    section {
+    p { margin: 6px 0 0; color: var(--muted); line-height: 1.5; }
+    section, .stat {
       background: var(--panel);
       border: 1px solid var(--line);
       border-radius: 8px;
-      padding: 16px;
       box-shadow: 0 8px 24px rgba(28, 39, 54, .06);
     }
-
-    .voice {
-      min-height: 304px;
-      display: grid;
-      gap: 14px;
-      align-content: start;
-    }
-
+    section { padding: 16px; }
+    .stats, .grid { display: grid; gap: 16px; }
+    .stats { grid-template-columns: repeat(3, minmax(0, 1fr)); margin-bottom: 16px; }
+    .grid { grid-template-columns: minmax(0, 1fr) 390px; align-items: start; }
+    .stat { padding: 12px; }
+    .stat small, label { color: var(--muted); font-size: 13px; font-weight: 700; }
+    .stat strong { display: block; margin-top: 6px; font-size: 19px; }
+    .voice { display: grid; gap: 13px; }
     .mic {
       width: 100%;
-      min-height: 112px;
+      min-height: 116px;
       border: 0;
       border-radius: 8px;
       background: var(--green);
       color: white;
       cursor: pointer;
       font-size: 20px;
-      font-weight: 750;
+      font-weight: 800;
       display: grid;
       place-items: center;
       gap: 8px;
     }
-
     .mic[aria-pressed="true"] { background: var(--red); }
     .mic svg { width: 34px; height: 34px; }
-
-    textarea, input, select {
-      width: 100%;
-      border: 1px solid var(--line);
-      border-radius: 8px;
-      padding: 11px 12px;
-      color: var(--text);
-      background: white;
-      font: inherit;
-    }
-
-    textarea { min-height: 86px; resize: vertical; }
-    label { display: grid; gap: 6px; color: var(--muted); font-size: 13px; font-weight: 650; }
-
-    .form {
-      display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 12px;
-    }
-    .form label:last-child { grid-column: 1 / -1; }
-
-    .actions, .filters {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-      align-items: center;
-    }
-
-    button, .filelink {
+    label { display: grid; gap: 6px; }
+    input, textarea, select, button {
       min-height: 40px;
       border: 1px solid var(--line);
       border-radius: 8px;
       background: white;
       color: var(--text);
-      padding: 0 13px;
-      cursor: pointer;
       font: inherit;
-      font-weight: 700;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-      text-decoration: none;
     }
-
-    .primary { background: var(--blue); border-color: var(--blue); color: white; }
+    input, textarea, select { width: 100%; padding: 10px 12px; }
+    textarea { min-height: 88px; resize: vertical; }
+    button { padding: 0 13px; cursor: pointer; font-weight: 750; }
+    button:disabled { cursor: not-allowed; opacity: .55; }
+    .primary { border-color: var(--blue); background: var(--blue); color: white; }
     .danger { color: var(--red); }
-
-    .stats {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 10px;
-      margin-bottom: 16px;
-    }
-
-    .stat {
-      background: var(--panel);
-      border: 1px solid var(--line);
-      border-radius: 8px;
-      padding: 12px;
-    }
-    .stat small { color: var(--muted); font-weight: 700; }
-    .stat strong { display: block; margin-top: 6px; font-size: 19px; }
-
-    table {
-      width: 100%;
-      border-collapse: collapse;
-    }
-    th, td {
-      padding: 11px 8px;
-      border-bottom: 1px solid var(--line);
-      text-align: left;
-      vertical-align: top;
-    }
+    .form { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+    .wide { grid-column: 1 / -1; }
+    .family { margin-bottom: 16px; }
+    .family-row { align-items: end; flex-wrap: wrap; margin-top: 12px; }
+    .family-row label { flex: 1 1 220px; }
+    .status { min-height: 24px; color: var(--amber); font-size: 14px; font-weight: 700; }
+    table { width: 100%; border-collapse: collapse; }
+    th, td { padding: 11px 8px; border-bottom: 1px solid var(--line); text-align: left; vertical-align: top; }
     th { color: var(--muted); font-size: 12px; }
-    td.amount { text-align: right; font-weight: 800; white-space: nowrap; }
+    td.amount { text-align: right; font-weight: 850; white-space: nowrap; }
     .income { color: var(--green); }
     .expense { color: var(--red); }
-    .empty { color: var(--muted); text-align: center; padding: 28px 8px; }
-
-    .toast {
-      min-height: 24px;
-      color: var(--amber);
-      font-size: 14px;
-      font-weight: 650;
-    }
-
-    @media (max-width: 820px) {
+    .empty { color: var(--muted); text-align: center; padding: 26px 8px; }
+    .hidden { display: none; }
+    @media (max-width: 860px) {
       .app { width: min(100% - 20px, 640px); padding-top: 18px; }
-      header, .grid { display: grid; grid-template-columns: 1fr; }
-      .stats, .form { grid-template-columns: 1fr; }
+      header, .grid, .stats, .form { grid-template-columns: 1fr; display: grid; }
+      .topline { flex-wrap: wrap; }
       th:nth-child(1), td:nth-child(1) { display: none; }
       section { padding: 13px; }
-      .mic { min-height: 96px; }
     }
   </style>
 </head>
@@ -186,184 +99,328 @@
     <header>
       <div>
         <h1>Catat Duit Voice</h1>
-        <p>Ucapkan: "pengeluaran 15000 makan", "pemasukan 2 juta gaji", atau ketik manual.</p>
+        <p id="familyLine">Masuk pakai email owner keluarga.</p>
       </div>
-      <button id="exportBtn" title="Unduh CSV">
-        <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M12 3v12m0 0 4-4m-4 4-4-4M5 19h14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        CSV
-      </button>
+      <button id="logoutBtn" class="hidden">Ganti Email</button>
     </header>
 
-    <div class="stats">
-      <div class="stat"><small>Saldo</small><strong id="balance">Rp0</strong></div>
-      <div class="stat"><small>Masuk</small><strong id="income">Rp0</strong></div>
-      <div class="stat"><small>Keluar</small><strong id="expense">Rp0</strong></div>
-    </div>
-
-    <div class="grid">
-      <section class="voice">
-        <button class="mic" id="micBtn" aria-pressed="false">
-          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 14a4 4 0 0 0 4-4V7a4 4 0 0 0-8 0v3a4 4 0 0 0 4 4Zm7-4a7 7 0 0 1-14 0m7 7v4m-4 0h8" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
-          <span id="micText">Mulai Bicara</span>
-        </button>
-
-        <label>Hasil suara / teks cepat
-          <textarea id="rawText" autocomplete="off" placeholder="Contoh: beli kopi 12000"></textarea>
+    <section id="familyGate" class="family">
+      <h2>Email keluarga</h2>
+      <p>Satu email membuat satu keluarga. Kalau email sudah ada, app langsung membuka data keluarga itu.</p>
+      <div class="family-row">
+        <label>Email owner
+          <input id="ownerEmail" type="email" autocomplete="email" placeholder="nama@email.com">
         </label>
+        <label>Nama keluarga
+          <input id="familyName" autocomplete="organization" placeholder="Keluarga Alwi">
+        </label>
+        <button id="familyBtn" class="primary">Masuk / Buat</button>
+      </div>
+    </section>
 
-        <div class="form">
-          <label>Tipe
-            <select id="type">
-              <option value="expense">Pengeluaran</option>
+    <div id="mainApp" class="hidden">
+      <div class="stats">
+        <div class="stat"><small>Saldo</small><strong id="balance">Rp0</strong></div>
+        <div class="stat"><small>Masuk</small><strong id="income">Rp0</strong></div>
+        <div class="stat"><small>Keluar</small><strong id="expense">Rp0</strong></div>
+      </div>
+
+      <div class="grid">
+        <section class="voice">
+          <button class="mic" id="micBtn" aria-pressed="false">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 14a4 4 0 0 0 4-4V7a4 4 0 0 0-8 0v3a4 4 0 0 0 4 4Zm7-4a7 7 0 0 1-14 0m7 7v4m-4 0h8" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+            <span id="micText">Voice On</span>
+          </button>
+
+          <label>Hasil suara / teks cepat
+            <textarea id="rawText" autocomplete="off" placeholder="Contoh: pengeluaran 15000 makan, pemasukan 1jt gaji"></textarea>
+          </label>
+
+          <div class="form">
+            <label>Tipe
+              <select id="type">
+                <option value="expense">Pengeluaran</option>
+                <option value="income">Pemasukan</option>
+              </select>
+            </label>
+            <label>Nominal
+              <input id="amount" inputmode="numeric" autocomplete="off" placeholder="15000">
+            </label>
+            <label class="wide">Catatan
+              <input id="note" autocomplete="off" placeholder="Makan siang">
+            </label>
+          </div>
+
+          <div class="actions">
+            <button class="primary" id="saveBtn">Simpan</button>
+            <button id="parseBtn">Baca Teks</button>
+            <button class="danger" id="clearBtn">Hapus Riwayat</button>
+          </div>
+          <div class="status" id="status"></div>
+        </section>
+
+        <section>
+          <div class="topline">
+            <h2>Riwayat</h2>
+            <select id="filter" aria-label="Filter riwayat">
+              <option value="all">Semua</option>
               <option value="income">Pemasukan</option>
+              <option value="expense">Pengeluaran</option>
             </select>
-          </label>
-          <label>Nominal
-            <input id="amount" inputmode="numeric" autocomplete="off" placeholder="15000">
-          </label>
-          <label>Catatan
-            <input id="note" autocomplete="off" placeholder="Makan siang">
-          </label>
-        </div>
-
-        <div class="actions">
-          <button class="primary" id="saveBtn">Simpan</button>
-          <button id="parseBtn">Baca Teks</button>
-          <button class="danger" id="clearBtn">Hapus Semua</button>
-        </div>
-        <div class="toast" id="toast"></div>
-      </section>
-
-      <section>
-        <div class="filters">
-          <h2>Riwayat</h2>
-          <select id="filter" aria-label="Filter riwayat">
-            <option value="all">Semua</option>
-            <option value="income">Pemasukan</option>
-            <option value="expense">Pengeluaran</option>
-          </select>
-        </div>
-        <table>
-          <thead><tr><th>Tanggal</th><th>Catatan</th><th>Nominal</th></tr></thead>
-          <tbody id="rows"></tbody>
-        </table>
-      </section>
+          </div>
+          <table>
+            <thead><tr><th>Tanggal</th><th>Catatan</th><th>Nominal</th></tr></thead>
+            <tbody id="rows"></tbody>
+          </table>
+        </section>
+      </div>
     </div>
   </main>
 
-  <script>
-    const $ = (id) => document.getElementById(id);
-    const fmt = new Intl.NumberFormat("id-ID", { style: "currency", currency: "IDR", maximumFractionDigits: 0 });
-    const key = "catat-duit-voice:v1";
-    let entries = JSON.parse(localStorage.getItem(key) || "[]");
-    let recognition;
+  <script type="module">
+    import { createClient } from "https://esm.sh/@supabase/supabase-js@2.87.1";
 
-    const save = () => localStorage.setItem(key, JSON.stringify(entries));
-    const rupiah = (n) => fmt.format(n).replace(/\s/g, "");
-    const toast = (msg) => $("toast").textContent = msg;
+    const SUPABASE_URL = "https://ajlkfzgpheegmwsnspxw.supabase.co";
+    const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFqbGtmemdwaGVlZ213c25zcHh3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODEwNzA2NzYsImV4cCI6MjA5NjY0NjY3Nn0.hz-BhOjBbuOa8l-yvRFbB4VE81VODWAZfAiwIaPlVWw";
+    const FAMILY_KEY = "catat-duit-voice-family";
+
+    const db = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    const $ = (id) => document.getElementById(id);
+    const money = new Intl.NumberFormat("id-ID", { style: "currency", currency: "IDR", maximumFractionDigits: 0 });
+
+    let family = JSON.parse(localStorage.getItem(FAMILY_KEY) || "null");
+    let entries = [];
+    let recognition;
+    let listening = false;
+
+    const rupiah = (n) => money.format(n).replace(/\s/g, "");
+    const setStatus = (text) => $("status").textContent = text;
+
+    async function requestMicPermission() {
+      if (!navigator.mediaDevices?.getUserMedia) return;
+      try {
+        const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+        stream.getTracks().forEach((track) => track.stop());
+      } catch {
+        setStatus("Izin mic belum aktif. Tekan tombol voice untuk coba lagi.");
+      }
+    }
+
+    function normalizeEmail(value) {
+      return value.trim().toLowerCase();
+    }
+
+    async function enterFamily() {
+      const ownerEmail = normalizeEmail($("ownerEmail").value);
+      const name = $("familyName").value.trim() || ownerEmail.split("@")[0] || "Keluarga";
+      if (!ownerEmail || !ownerEmail.includes("@")) return setStatus("Email owner belum valid.");
+
+      $("familyBtn").disabled = true;
+      try {
+        const { data: existing, error: findError } = await db
+          .from("catat_duit_voice_families")
+          .select("*")
+          .eq("owner_email", ownerEmail)
+          .maybeSingle();
+        if (findError) throw findError;
+
+        if (existing) {
+          family = existing;
+        } else {
+          const { data: created, error: createError } = await db
+            .from("catat_duit_voice_families")
+            .insert({ owner_email: ownerEmail, name })
+            .select()
+            .single();
+          if (createError) throw createError;
+          family = created;
+        }
+
+        localStorage.setItem(FAMILY_KEY, JSON.stringify(family));
+        showApp();
+        await loadEntries();
+      } catch (error) {
+        setStatus(error.message || "Gagal masuk keluarga.");
+      } finally {
+        $("familyBtn").disabled = false;
+      }
+    }
+
+    function showApp() {
+      $("familyGate").classList.toggle("hidden", !!family);
+      $("mainApp").classList.toggle("hidden", !family);
+      $("logoutBtn").classList.toggle("hidden", !family);
+      $("familyLine").textContent = family ? `${family.name} - ${family.owner_email}` : "Masuk pakai email owner keluarga.";
+    }
+
+    async function loadEntries() {
+      if (!family) return;
+      const { data, error } = await db
+        .from("catat_duit_voice_transactions")
+        .select("*")
+        .eq("family_id", family.id)
+        .order("happened_at", { ascending: false });
+      if (error) return setStatus(error.message);
+      entries = data || [];
+      render();
+    }
 
     function parseMoney(text) {
-      const clean = text.toLowerCase().replace(/,/g, ".").replace(/[^\w\s.]/g, " ");
-      const match = clean.match(/(\d+(?:\.\d+)?)\s*(juta|jt|ribu|rb|k)?/);
+      const normalized = text.toLowerCase();
+      const match = normalized.match(/\b(\d+(?:[.,]\d{1,3})*)\s*(jt|rb|k)\b|\b(\d+(?:[.,]\d{1,3})*)\s*(juta|ribu)?\b/);
       if (!match) return 0;
-      const unit = { juta: 1000000, jt: 1000000, ribu: 1000, rb: 1000, k: 1000 }[match[2]] || 1;
-      return Math.round(Number(match[1]) * unit);
+
+      const raw = match[1] || match[3];
+      const unit = ({ jt: "juta", rb: "ribu", k: "ribu" }[match[2]] || match[4] || "");
+      let number;
+
+      if (unit) {
+        number = Number(raw.replace(",", "."));
+      } else if (/^\d{1,3}([.,]\d{3})+$/.test(raw)) {
+        number = Number(raw.replace(/[.,]/g, ""));
+      } else {
+        number = Number(raw.replace(/[^\d]/g, ""));
+      }
+
+      const multiplier = unit === "juta" ? 1000000 : unit === "ribu" ? 1000 : 1;
+      return Math.round(number * multiplier) || 0;
     }
 
     function parseText() {
       const text = $("rawText").value.trim();
-      if (!text) return toast("Teks masih kosong.");
+      if (!text) return setStatus("Teks masih kosong.");
       const lower = text.toLowerCase();
       const type = /masuk|pemasukan|gaji|terima|income/.test(lower) ? "income" : "expense";
       const amount = parseMoney(lower);
       const note = text
-        .replace(/\d+(?:[.,]\d+)?\s*(juta|jt|ribu|rb|k)?/i, "")
+        .replace(/\d+(?:[.,]\d{1,3})*\s*(juta|jt|ribu|rb|k)?/i, "")
         .replace(/pengeluaran|pemasukan|keluar|masuk|income|expense|beli|bayar/ig, "")
         .trim() || (type === "income" ? "Pemasukan" : "Pengeluaran");
 
       $("type").value = type;
       $("amount").value = amount || "";
       $("note").value = note;
-      toast(amount ? "Teks terbaca. Cek lalu simpan." : "Nominal belum ketemu.");
+      setStatus(amount ? "Teks terbaca. Cek lalu simpan." : "Nominal belum ketemu.");
+      return { type, amount, note };
     }
 
-    function addEntry() {
+    async function saveEntry() {
+      if (!family) return setStatus("Masuk email keluarga dulu.");
       const amount = Number(String($("amount").value).replace(/[^\d]/g, ""));
       const note = $("note").value.trim();
-      if (!amount || !note) return toast("Nominal dan catatan wajib diisi.");
-      entries.unshift({ id: crypto.randomUUID(), type: $("type").value, amount, note, date: new Date().toISOString() });
-      save();
+      if (!amount || !note) return setStatus("Nominal dan catatan wajib diisi.");
+
+      const { error } = await db.from("catat_duit_voice_transactions").insert({
+        family_id: family.id,
+        type: $("type").value,
+        note,
+        amount,
+      });
+      if (error) return setStatus(error.message);
+
       $("rawText").value = $("amount").value = $("note").value = "";
-      toast("Tersimpan.");
+      setStatus("Tersimpan.");
+      await loadEntries();
+    }
+
+    async function clearEntries() {
+      if (!family || !entries.length || !confirm("Hapus semua riwayat keluarga ini?")) return;
+      const { error } = await db.from("catat_duit_voice_transactions").delete().eq("family_id", family.id);
+      if (error) return setStatus(error.message);
+      entries = [];
       render();
+      setStatus("Riwayat dihapus.");
     }
 
     function render() {
-      const totals = entries.reduce((a, e) => {
-        a[e.type] += e.amount;
-        return a;
+      const totals = entries.reduce((acc, item) => {
+        acc[item.type] += item.amount;
+        return acc;
       }, { income: 0, expense: 0 });
       $("income").textContent = rupiah(totals.income);
       $("expense").textContent = rupiah(totals.expense);
       $("balance").textContent = rupiah(totals.income - totals.expense);
 
-      const visible = entries.filter((e) => $("filter").value === "all" || e.type === $("filter").value);
-      $("rows").innerHTML = visible.length ? visible.map((e) => `
-        <tr>
-          <td>${new Date(e.date).toLocaleDateString("id-ID")}</td>
-          <td>${e.note}</td>
-          <td class="amount ${e.type}">${e.type === "income" ? "+" : "-"}${rupiah(e.amount)}</td>
-        </tr>
-      `).join("") : `<tr><td class="empty" colspan="3">Belum ada catatan.</td></tr>`;
-    }
-
-    function exportCsv() {
-      const csv = ["tanggal,tipe,catatan,nominal"].concat(entries.map((e) =>
-        [new Date(e.date).toLocaleDateString("id-ID"), e.type, `"${e.note.replace(/"/g, '""')}"`, e.amount].join(",")
-      )).join("\n");
-      const a = document.createElement("a");
-      a.href = URL.createObjectURL(new Blob([csv], { type: "text/csv" }));
-      a.download = "catat-duit-voice.csv";
-      a.click();
-      URL.revokeObjectURL(a.href);
-    }
-
-    function toggleMic() {
-      const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-      if (!SpeechRecognition) return toast("Voice belum didukung browser ini. Pakai Chrome atau ketik manual.");
-      if (!recognition) {
-        recognition = new SpeechRecognition();
-        recognition.lang = "id-ID";
-        recognition.interimResults = false;
-        recognition.onresult = (event) => {
-          $("rawText").value = event.results[0][0].transcript;
-          parseText();
-        };
-        recognition.onend = () => {
-          $("micBtn").setAttribute("aria-pressed", "false");
-          $("micText").textContent = "Mulai Bicara";
-        };
-        recognition.onerror = () => toast("Voice gagal. Coba lagi atau ketik manual.");
+      const visible = entries.filter((item) => $("filter").value === "all" || item.type === $("filter").value);
+      $("rows").replaceChildren();
+      if (!visible.length) {
+        const tr = document.createElement("tr");
+        const td = document.createElement("td");
+        td.className = "empty";
+        td.colSpan = 3;
+        td.textContent = "Belum ada catatan.";
+        tr.append(td);
+        $("rows").append(tr);
+        return;
       }
-      $("micBtn").setAttribute("aria-pressed", "true");
-      $("micText").textContent = "Mendengarkan";
-      recognition.start();
+
+      for (const item of visible) {
+        const tr = document.createElement("tr");
+        const date = document.createElement("td");
+        const note = document.createElement("td");
+        const amount = document.createElement("td");
+        date.textContent = new Date(item.happened_at).toLocaleDateString("id-ID");
+        note.textContent = item.note;
+        amount.className = `amount ${item.type}`;
+        amount.textContent = `${item.type === "income" ? "+" : "-"}${rupiah(item.amount)}`;
+        tr.append(date, note, amount);
+        $("rows").append(tr);
+      }
     }
 
-    $("micBtn").onclick = toggleMic;
-    $("parseBtn").onclick = parseText;
-    $("saveBtn").onclick = addEntry;
-    $("filter").onchange = render;
-    $("exportBtn").onclick = exportCsv;
-    $("clearBtn").onclick = () => {
-      if (!entries.length || !confirm("Hapus semua catatan?")) return;
-      entries = [];
-      save();
-      render();
-      toast("Riwayat dihapus.");
-    };
+    function setupRecognition() {
+      const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+      if (!SpeechRecognition) return null;
+      const rec = new SpeechRecognition();
+      rec.lang = "id-ID";
+      rec.continuous = true;
+      rec.interimResults = false;
+      rec.onresult = (event) => {
+        const last = event.results[event.results.length - 1][0].transcript;
+        $("rawText").value = last;
+        parseText();
+      };
+      rec.onend = () => {
+        if (listening) rec.start();
+      };
+      rec.onerror = () => setStatus("Voice gagal. Coba lagi atau ketik manual.");
+      return rec;
+    }
 
-    render();
+    function toggleVoice() {
+      recognition ||= setupRecognition();
+      if (!recognition) return setStatus("Voice belum didukung browser ini. Pakai Chrome.");
+      listening = !listening;
+      $("micBtn").setAttribute("aria-pressed", String(listening));
+      $("micText").textContent = listening ? "Voice Off" : "Voice On";
+      if (listening) {
+        recognition.start();
+        setStatus("Voice aktif.");
+      } else {
+        recognition.stop();
+        setStatus("Voice berhenti.");
+      }
+    }
+
+    $("familyBtn").onclick = enterFamily;
+    $("logoutBtn").onclick = () => {
+      localStorage.removeItem(FAMILY_KEY);
+      family = null;
+      entries = [];
+      showApp();
+      render();
+    };
+    $("micBtn").onclick = toggleVoice;
+    $("parseBtn").onclick = parseText;
+    $("saveBtn").onclick = saveEntry;
+    $("clearBtn").onclick = clearEntries;
+    $("filter").onchange = render;
+    $("ownerEmail").onkeydown = (event) => { if (event.key === "Enter") enterFamily(); };
+    $("familyName").onkeydown = (event) => { if (event.key === "Enter") enterFamily(); };
+
+    requestMicPermission();
+    showApp();
+    if (family) loadEntries();
   </script>
 </body>
 </html>
