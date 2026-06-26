@@ -1,0 +1,369 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Catat Duit Voice</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --bg: #f7f8fb;
+      --panel: #ffffff;
+      --text: #17202a;
+      --muted: #687382;
+      --line: #dce2ea;
+      --green: #167a57;
+      --red: #c2413b;
+      --amber: #b66a00;
+      --blue: #275bb5;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--text);
+    }
+
+    .app {
+      width: min(1120px, calc(100% - 32px));
+      margin: 0 auto;
+      padding: 28px 0;
+    }
+
+    header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 20px;
+    }
+
+    h1, h2 { margin: 0; letter-spacing: 0; }
+    h1 { font-size: clamp(28px, 4vw, 46px); line-height: 1.05; }
+    h2 { font-size: 16px; }
+    p { margin: 6px 0 0; color: var(--muted); line-height: 1.55; }
+
+    .grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 360px;
+      gap: 16px;
+      align-items: start;
+    }
+
+    section {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 16px;
+      box-shadow: 0 8px 24px rgba(28, 39, 54, .06);
+    }
+
+    .voice {
+      min-height: 304px;
+      display: grid;
+      gap: 14px;
+      align-content: start;
+    }
+
+    .mic {
+      width: 100%;
+      min-height: 112px;
+      border: 0;
+      border-radius: 8px;
+      background: var(--green);
+      color: white;
+      cursor: pointer;
+      font-size: 20px;
+      font-weight: 750;
+      display: grid;
+      place-items: center;
+      gap: 8px;
+    }
+
+    .mic[aria-pressed="true"] { background: var(--red); }
+    .mic svg { width: 34px; height: 34px; }
+
+    textarea, input, select {
+      width: 100%;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 11px 12px;
+      color: var(--text);
+      background: white;
+      font: inherit;
+    }
+
+    textarea { min-height: 86px; resize: vertical; }
+    label { display: grid; gap: 6px; color: var(--muted); font-size: 13px; font-weight: 650; }
+
+    .form {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+    }
+    .form label:last-child { grid-column: 1 / -1; }
+
+    .actions, .filters {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      align-items: center;
+    }
+
+    button, .filelink {
+      min-height: 40px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: white;
+      color: var(--text);
+      padding: 0 13px;
+      cursor: pointer;
+      font: inherit;
+      font-weight: 700;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      text-decoration: none;
+    }
+
+    .primary { background: var(--blue); border-color: var(--blue); color: white; }
+    .danger { color: var(--red); }
+
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+      margin-bottom: 16px;
+    }
+
+    .stat {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 12px;
+    }
+    .stat small { color: var(--muted); font-weight: 700; }
+    .stat strong { display: block; margin-top: 6px; font-size: 19px; }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    th, td {
+      padding: 11px 8px;
+      border-bottom: 1px solid var(--line);
+      text-align: left;
+      vertical-align: top;
+    }
+    th { color: var(--muted); font-size: 12px; }
+    td.amount { text-align: right; font-weight: 800; white-space: nowrap; }
+    .income { color: var(--green); }
+    .expense { color: var(--red); }
+    .empty { color: var(--muted); text-align: center; padding: 28px 8px; }
+
+    .toast {
+      min-height: 24px;
+      color: var(--amber);
+      font-size: 14px;
+      font-weight: 650;
+    }
+
+    @media (max-width: 820px) {
+      .app { width: min(100% - 20px, 640px); padding-top: 18px; }
+      header, .grid { display: grid; grid-template-columns: 1fr; }
+      .stats, .form { grid-template-columns: 1fr; }
+      th:nth-child(1), td:nth-child(1) { display: none; }
+      section { padding: 13px; }
+      .mic { min-height: 96px; }
+    }
+  </style>
+</head>
+<body>
+  <main class="app">
+    <header>
+      <div>
+        <h1>Catat Duit Voice</h1>
+        <p>Ucapkan: "pengeluaran 15000 makan", "pemasukan 2 juta gaji", atau ketik manual.</p>
+      </div>
+      <button id="exportBtn" title="Unduh CSV">
+        <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M12 3v12m0 0 4-4m-4 4-4-4M5 19h14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        CSV
+      </button>
+    </header>
+
+    <div class="stats">
+      <div class="stat"><small>Saldo</small><strong id="balance">Rp0</strong></div>
+      <div class="stat"><small>Masuk</small><strong id="income">Rp0</strong></div>
+      <div class="stat"><small>Keluar</small><strong id="expense">Rp0</strong></div>
+    </div>
+
+    <div class="grid">
+      <section class="voice">
+        <button class="mic" id="micBtn" aria-pressed="false">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 14a4 4 0 0 0 4-4V7a4 4 0 0 0-8 0v3a4 4 0 0 0 4 4Zm7-4a7 7 0 0 1-14 0m7 7v4m-4 0h8" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+          <span id="micText">Mulai Bicara</span>
+        </button>
+
+        <label>Hasil suara / teks cepat
+          <textarea id="rawText" autocomplete="off" placeholder="Contoh: beli kopi 12000"></textarea>
+        </label>
+
+        <div class="form">
+          <label>Tipe
+            <select id="type">
+              <option value="expense">Pengeluaran</option>
+              <option value="income">Pemasukan</option>
+            </select>
+          </label>
+          <label>Nominal
+            <input id="amount" inputmode="numeric" autocomplete="off" placeholder="15000">
+          </label>
+          <label>Catatan
+            <input id="note" autocomplete="off" placeholder="Makan siang">
+          </label>
+        </div>
+
+        <div class="actions">
+          <button class="primary" id="saveBtn">Simpan</button>
+          <button id="parseBtn">Baca Teks</button>
+          <button class="danger" id="clearBtn">Hapus Semua</button>
+        </div>
+        <div class="toast" id="toast"></div>
+      </section>
+
+      <section>
+        <div class="filters">
+          <h2>Riwayat</h2>
+          <select id="filter" aria-label="Filter riwayat">
+            <option value="all">Semua</option>
+            <option value="income">Pemasukan</option>
+            <option value="expense">Pengeluaran</option>
+          </select>
+        </div>
+        <table>
+          <thead><tr><th>Tanggal</th><th>Catatan</th><th>Nominal</th></tr></thead>
+          <tbody id="rows"></tbody>
+        </table>
+      </section>
+    </div>
+  </main>
+
+  <script>
+    const $ = (id) => document.getElementById(id);
+    const fmt = new Intl.NumberFormat("id-ID", { style: "currency", currency: "IDR", maximumFractionDigits: 0 });
+    const key = "catat-duit-voice:v1";
+    let entries = JSON.parse(localStorage.getItem(key) || "[]");
+    let recognition;
+
+    const save = () => localStorage.setItem(key, JSON.stringify(entries));
+    const rupiah = (n) => fmt.format(n).replace(/\s/g, "");
+    const toast = (msg) => $("toast").textContent = msg;
+
+    function parseMoney(text) {
+      const clean = text.toLowerCase().replace(/,/g, ".").replace(/[^\w\s.]/g, " ");
+      const match = clean.match(/(\d+(?:\.\d+)?)\s*(juta|jt|ribu|rb|k)?/);
+      if (!match) return 0;
+      const unit = { juta: 1000000, jt: 1000000, ribu: 1000, rb: 1000, k: 1000 }[match[2]] || 1;
+      return Math.round(Number(match[1]) * unit);
+    }
+
+    function parseText() {
+      const text = $("rawText").value.trim();
+      if (!text) return toast("Teks masih kosong.");
+      const lower = text.toLowerCase();
+      const type = /masuk|pemasukan|gaji|terima|income/.test(lower) ? "income" : "expense";
+      const amount = parseMoney(lower);
+      const note = text
+        .replace(/\d+(?:[.,]\d+)?\s*(juta|jt|ribu|rb|k)?/i, "")
+        .replace(/pengeluaran|pemasukan|keluar|masuk|income|expense|beli|bayar/ig, "")
+        .trim() || (type === "income" ? "Pemasukan" : "Pengeluaran");
+
+      $("type").value = type;
+      $("amount").value = amount || "";
+      $("note").value = note;
+      toast(amount ? "Teks terbaca. Cek lalu simpan." : "Nominal belum ketemu.");
+    }
+
+    function addEntry() {
+      const amount = Number(String($("amount").value).replace(/[^\d]/g, ""));
+      const note = $("note").value.trim();
+      if (!amount || !note) return toast("Nominal dan catatan wajib diisi.");
+      entries.unshift({ id: crypto.randomUUID(), type: $("type").value, amount, note, date: new Date().toISOString() });
+      save();
+      $("rawText").value = $("amount").value = $("note").value = "";
+      toast("Tersimpan.");
+      render();
+    }
+
+    function render() {
+      const totals = entries.reduce((a, e) => {
+        a[e.type] += e.amount;
+        return a;
+      }, { income: 0, expense: 0 });
+      $("income").textContent = rupiah(totals.income);
+      $("expense").textContent = rupiah(totals.expense);
+      $("balance").textContent = rupiah(totals.income - totals.expense);
+
+      const visible = entries.filter((e) => $("filter").value === "all" || e.type === $("filter").value);
+      $("rows").innerHTML = visible.length ? visible.map((e) => `
+        <tr>
+          <td>${new Date(e.date).toLocaleDateString("id-ID")}</td>
+          <td>${e.note}</td>
+          <td class="amount ${e.type}">${e.type === "income" ? "+" : "-"}${rupiah(e.amount)}</td>
+        </tr>
+      `).join("") : `<tr><td class="empty" colspan="3">Belum ada catatan.</td></tr>`;
+    }
+
+    function exportCsv() {
+      const csv = ["tanggal,tipe,catatan,nominal"].concat(entries.map((e) =>
+        [new Date(e.date).toLocaleDateString("id-ID"), e.type, `"${e.note.replace(/"/g, '""')}"`, e.amount].join(",")
+      )).join("\n");
+      const a = document.createElement("a");
+      a.href = URL.createObjectURL(new Blob([csv], { type: "text/csv" }));
+      a.download = "catat-duit-voice.csv";
+      a.click();
+      URL.revokeObjectURL(a.href);
+    }
+
+    function toggleMic() {
+      const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+      if (!SpeechRecognition) return toast("Voice belum didukung browser ini. Pakai Chrome atau ketik manual.");
+      if (!recognition) {
+        recognition = new SpeechRecognition();
+        recognition.lang = "id-ID";
+        recognition.interimResults = false;
+        recognition.onresult = (event) => {
+          $("rawText").value = event.results[0][0].transcript;
+          parseText();
+        };
+        recognition.onend = () => {
+          $("micBtn").setAttribute("aria-pressed", "false");
+          $("micText").textContent = "Mulai Bicara";
+        };
+        recognition.onerror = () => toast("Voice gagal. Coba lagi atau ketik manual.");
+      }
+      $("micBtn").setAttribute("aria-pressed", "true");
+      $("micText").textContent = "Mendengarkan";
+      recognition.start();
+    }
+
+    $("micBtn").onclick = toggleMic;
+    $("parseBtn").onclick = parseText;
+    $("saveBtn").onclick = addEntry;
+    $("filter").onchange = render;
+    $("exportBtn").onclick = exportCsv;
+    $("clearBtn").onclick = () => {
+      if (!entries.length || !confirm("Hapus semua catatan?")) return;
+      entries = [];
+      save();
+      render();
+      toast("Riwayat dihapus.");
+    };
+
+    render();
+  </script>
+</body>
+</html>
